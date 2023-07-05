@@ -6,6 +6,7 @@
 #include "Json.h"
 #include "JsonUtilities.h"
 #include "Interfaces/IHttpResponse.h"
+#include "WeatherDataLibrary.h"
 
 void UAPI_CodeTest_Instance::API_CodeTest_Instance()
 {
@@ -36,6 +37,11 @@ void UAPI_CodeTest_Instance::OnWeatherDataReceived(FHttpRequestPtr Request, FHtt
         {
             FWeatherData WeatherData;
             FJsonObjectConverter::JsonObjectToUStruct<FWeatherData>(JsonObject.ToSharedRef(), &WeatherData);
+
+
+
+            FString WeatherDataString = UWeatherDataLibrary::WeatherDataToString(WeatherData);
+            UE_LOG(LogTemp, Warning, TEXT("%s"), *WeatherDataString);
         }
     }
 }

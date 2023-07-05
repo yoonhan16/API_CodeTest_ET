@@ -41,6 +41,7 @@ struct FWeatherData
 
     UPROPERTY(BlueprintReadOnly)
     int32 ny;
+
 };
 
 UCLASS()
@@ -51,7 +52,10 @@ class API_CODETEST_ET_API UAPI_CodeTest_Instance : public UGameInstance
 public:
     void API_CodeTest_Instance();
 
+    UFUNCTION(BlueprintCallable, Category = "API Code Test")
     void FetchWeatherData();
+
+private:
     void OnWeatherDataReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
 };
