@@ -31,12 +31,12 @@ void UAPI_CodeTest_Instance::OnWeatherDataReceived(FHttpRequestPtr Request, FHtt
     {
         FString ResponseStr = Response->GetContentAsString();
 
-        TArray<FWeatherData> WeatherDataArray;
         ParseWeatherData(ResponseStr, WeatherDataArray);
+        UE_LOG(LogTemp, Error, TEXT("Ready to BroadCast."));
     }
 }
 
-void UAPI_CodeTest_Instance::ParseWeatherData(const FString& JsonString, TArray<FWeatherData>& WeatherDataArray)
+void UAPI_CodeTest_Instance::ParseWeatherData(const FString& JsonString, TArray<FWeatherData>& OutWeatherDataArray)
 {
     // Deserialize JSON string to JSON object
     TSharedPtr<FJsonObject> JsonObject;
@@ -64,7 +64,7 @@ void UAPI_CodeTest_Instance::ParseWeatherData(const FString& JsonString, TArray<
     }
 
     // Clear the output array
-    WeatherDataArray.Empty();
+    OutWeatherDataArray.Empty();
 
     // Iterate through each item in the array
     for (const TSharedPtr<FJsonValue>& ItemValue : *ItemArray)
@@ -77,18 +77,35 @@ void UAPI_CodeTest_Instance::ParseWeatherData(const FString& JsonString, TArray<
 
             // Retrieve values from the JSON object and assign them to the FWeatherData object
             WeatherData.baseDate = ItemObject->GetStringField("baseDate");
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, WeatherData.baseDate);
             WeatherData.baseTime = ItemObject->GetStringField("baseTime");
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, WeatherData.baseTime);
             WeatherData.category = ItemObject->GetStringField("category");
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, WeatherData.category);
             WeatherData.fcstDate = ItemObject->GetStringField("fcstDate");
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, WeatherData.fcstDate);
             WeatherData.fcstTime = ItemObject->GetStringField("fcstTime");
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, WeatherData.fcstTime);
             WeatherData.fcstValue = ItemObject->GetStringField("fcstValue");
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, WeatherData.fcstValue);
             WeatherData.nx = ItemObject->GetIntegerField("nx");
+            //FString nxString = FString::Printf(TEXT("%d"), WeatherData.nx);
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, nxString);
             WeatherData.ny = ItemObject->GetIntegerField("ny");
+            //FString nyString = FString::Printf(TEXT("%d"), WeatherData.ny);
+            //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Blue, nyString);
 
             // Add the FWeatherData object to the output array
-            WeatherDataArray.Add(WeatherData);
+            OutWeatherDataArray.Add(WeatherData);
+            WeatherDataArray = OutWeatherDataArray;
             UE_LOG(LogTemp, Warning, TEXT("JSON Data added to WeatherDataArray."));
         }
     }
 }
+
+TArray<FWeatherData> UAPI_CodeTest_Instance::GetWeatherDataArray() const
+{
+    return WeatherDataArray;
+}
+
 
