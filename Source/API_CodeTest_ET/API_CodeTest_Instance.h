@@ -19,29 +19,28 @@ struct FWeatherData
     GENERATED_BODY()
 
     UPROPERTY(BlueprintReadOnly)
-    FString baseDate;
+        FString baseDate;
 
     UPROPERTY(BlueprintReadOnly)
-    FString baseTime;
+        FString baseTime;
 
     UPROPERTY(BlueprintReadOnly)
-    FString category;
+        FString category;
 
     UPROPERTY(BlueprintReadOnly)
-    FString fcstDate;
+        FString fcstDate;
 
     UPROPERTY(BlueprintReadOnly)
-    FString fcstTime;
+        FString fcstTime;
 
     UPROPERTY(BlueprintReadOnly)
-    FString fcstValue;
+        FString fcstValue;
 
     UPROPERTY(BlueprintReadOnly)
-    int32 nx;
+        int32 nx;
 
     UPROPERTY(BlueprintReadOnly)
-    int32 ny;
-
+        int32 ny;
 };
 
 UCLASS()
@@ -50,12 +49,14 @@ class API_CODETEST_ET_API UAPI_CodeTest_Instance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-    void API_CodeTest_Instance();
 
-    UFUNCTION(BlueprintCallable, Category = "API Code Test")
+    UAPI_CodeTest_Instance();
+
+    UFUNCTION(BlueprintCallable)
     void FetchWeatherData();
 
 private:
     void OnWeatherDataReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+    void ParseWeatherData(const FString& JsonString, TArray<FWeatherData>& WeatherDataArray);
 
 };

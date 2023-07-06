@@ -8,8 +8,11 @@
 #include "Interfaces/IHttpResponse.h"
 #include "WeatherDataLibrary.h"
 
-void UAPI_CodeTest_Instance::API_CodeTest_Instance()
+
+
+UAPI_CodeTest_Instance::UAPI_CodeTest_Instance()
 {
+    FetchWeatherData();
 }
 
 void UAPI_CodeTest_Instance::FetchWeatherData()
@@ -18,7 +21,7 @@ void UAPI_CodeTest_Instance::FetchWeatherData()
     HttpRequest->SetVerb("GET");
     HttpRequest->SetURL("http://127.0.0.1:3000/weather");
 
-    // 요청 완료 시 호출될 콜백 함수 설정
+    // Request completion callback
     HttpRequest->OnProcessRequestComplete().BindUObject(this, &UAPI_CodeTest_Instance::OnWeatherDataReceived);
 
     HttpRequest->ProcessRequest();
@@ -30,18 +33,63 @@ void UAPI_CodeTest_Instance::OnWeatherDataReceived(FHttpRequestPtr Request, FHtt
     {
         FString ResponseStr = Response->GetContentAsString();
 
-        TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
-        TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(ResponseStr);
+        TArray<FWeatherData> WeatherDataArray;
+        ParseWeatherData(ResponseStr, WeatherDataArray);
+    }
+}
 
-        if (FJsonSerializer::Deserialize(JsonReader, JsonObject) && JsonObject.IsValid())
+void UAPI_CodeTest_Instance::ParseWeatherData(const FString& JsonString, TArray<FWeatherData>& WeatherDataArray)
+{
+    // Deserialize JSON string to JSON object
+    TSharedPtr<FJsonObject> JsonObject;
+    TSharedRef<TJsonReader<>> JsonReader = TJsonReaderFactory<>::Create(JsonString);
+    if (!FJsonSerializer::Deserialize(JsonReader, JsonObject) || !JsonObject.IsValid())
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to parse JSON string."));
+        return;
+    }
+
+    // Get "message" object
+    const TSharedPtr<FJsonObject>* MessageObject;
+    if (!JsonObject->TryGetObjectField("message", MessageObject))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get \"message\" object from JSON object."));
+        return;
+    }
+
+    // Get "item" array from "message" object
+    const TArray<TSharedPtr<FJsonValue>>* ItemArray;
+    if (!(*MessageObject)->TryGetArrayField("item", ItemArray))
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get \"item\" array from \"message\" object."));
+        return;
+    }
+
+    // Clear the output array
+    WeatherDataArray.Empty();
+
+    // Iterate through each item in the array
+    for (const TSharedPtr<FJsonValue>& ItemValue : *ItemArray)
+    {
+        const TSharedPtr<FJsonObject>& ItemObject = ItemValue->AsObject();
+        if (ItemObject.IsValid())
         {
+            // Create a new FWeatherData object
             FWeatherData WeatherData;
-            FJsonObjectConverter::JsonObjectToUStruct<FWeatherData>(JsonObject.ToSharedRef(), &WeatherData);
 
+            // Retrieve values from the JSON object and assign them to the FWeatherData object
+            WeatherData.baseDate = ItemObject->GetStringField("baseDate");
+            WeatherData.baseTime = ItemObject->GetStringField("baseTime");
+            WeatherData.category = ItemObject->GetStringField("category");
+            WeatherData.fcstDate = ItemObject->GetStringField("fcstDate");
+            WeatherData.fcstTime = ItemObject->GetStringField("fcstTime");
+            WeatherData.fcstValue = ItemObject->GetStringField("fcstValue");
+            WeatherData.nx = ItemObject->GetIntegerField("nx");
+            WeatherData.ny = ItemObject->GetIntegerField("ny");
 
-
-            FString WeatherDataString = UWeatherDataLibrary::WeatherDataToString(WeatherData);
-            UE_LOG(LogTemp, Warning, TEXT("%s"), *WeatherDataString);
+            // Add the FWeatherData object to the output array
+            WeatherDataArray.Add(WeatherData);
+            UE_LOG(LogTemp, Warning, TEXT("JSON Data added to WeatherDataArray."));
         }
     }
 }
