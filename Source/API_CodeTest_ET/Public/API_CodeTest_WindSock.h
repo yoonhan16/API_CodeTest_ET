@@ -6,9 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "API_CodeTest_WindSock.generated.h"
 
-class UBoxComponent;
-class UStaticMeshComponent;
-
 UCLASS()
 class API_CODETEST_ET_API AAPI_CodeTest_WindSock : public AActor
 {
@@ -26,7 +23,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UBoxComponent* Box;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UBoxComponent* Box;
 
-	UStaticMeshComponent* Body;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	class UStaticMeshComponent* Body;
 };
