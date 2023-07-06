@@ -6,8 +6,6 @@
 #include "Json.h"
 #include "JsonUtilities.h"
 #include "Interfaces/IHttpResponse.h"
-#include "WeatherDataLibrary.h"
-
 
 
 UAPI_CodeTest_Instance::UAPI_CodeTest_Instance()
