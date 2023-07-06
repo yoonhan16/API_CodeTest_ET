@@ -15,7 +15,13 @@ AAPI_CodeTest_WindSock::AAPI_CodeTest_WindSock()
 	RootComponent = Box;
 
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
-	Body->SetupAttachment(Body);
+	Body->SetupAttachment(Box);
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> Icon_Sock(TEXT("/Script/Engine.StaticMesh'/Game/Meshes/Icon_Sock.Icon_Sock'"));
+	if (Icon_Sock.Succeeded())
+	{
+		Body->SetStaticMesh(Icon_Sock.Object);
+		Body->AddRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	}
 }
 
 // Called when the game starts or when spawned
