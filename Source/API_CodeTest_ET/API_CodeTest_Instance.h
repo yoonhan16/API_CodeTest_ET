@@ -55,8 +55,15 @@ public:
     UFUNCTION(BlueprintCallable)
     void FetchWeatherData();
 
+    UFUNCTION(BlueprintCallable, Category = "Weather")
+    TArray<FWeatherData> GetWeatherDataArray() const;
+
+
 private:
     void OnWeatherDataReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
     void ParseWeatherData(const FString& JsonString, TArray<FWeatherData>& WeatherDataArray);
 
+private:
+
+    TArray<FWeatherData> WeatherDataArray;
 };
