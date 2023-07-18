@@ -4,3 +4,4 @@ Content/AssetMigration/EuropeanBeech/Textures/Tileable/T_EuropeanBeech_Tileable_
 Content/AssetMigration/EuropeanBeech/Textures/TwoSided/Summer/T_EuropeanBeech_Twosided_Summer_Mask.uasset filter=lfs diff=lfs merge=lfs -text
 Content/AssetMigration/EuropeanBeech/Textures/TwoSided/Summer/T_EuropeanBeech_Twosided_Summer_Normal.uasset filter=lfs diff=lfs merge=lfs -text
 Content/AssetMigration/EuropeanBeech/Textures/Tileable/T_EuropeanBeech_Tileable_Normal.uasset filter=lfs diff=lfs merge=lfs -text
+Content/WorkbyInHoan/Chaos/GC_Building1.uasset filter=lfs diff=lfs merge=lfs -text
